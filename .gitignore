@@ -220,10 +220,21 @@ lightning_logs/
 wandb/
 tmp/
 .env
-raw_data/
 processed_data/
 pretrained/
 **/*.ckpt
+
+# Ignore all data by default
+raw_data/**
+
+# Allow Git to traverse these directories
+!raw_data/
+!raw_data/single_bid_zones/
+!raw_data/single_bid_zones/de_lu/
+
+# Allow only these two files
+!raw_data/single_bid_zones/de_lu/de_lu_train_val.csv
+!raw_data/single_bid_zones/de_lu/de_lu_test.csv
 
 .vscode/*
 .vscode/settings.json
