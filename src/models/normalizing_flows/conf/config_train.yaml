@@ -1,0 +1,23 @@
+defaults:
+  - data: ???
+  - model: ???          
+  - features: calendar   
+  - train: ???
+  - logging: default
+  - _self_
+
+
+experiment: ???
+seed: 42
+resume: false                 # resume from last.ckpt if present
+runs_root: ${hydra:runtime.cwd}/outputs/${model.model_type}/${model.size}/${experiment}/runs
+out_root: outputs/${model.model_type}/${model.size}/${experiment}
+train:
+  run_id: null
+
+# Make Hydra put the working dir for this run *inside* that structure
+hydra:
+  run:
+    dir: ${out_root}
+  job:
+    chdir: true

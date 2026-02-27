@@ -1,0 +1,88 @@
+defaults:
+  - logging: default
+  - candidates: ???
+  - _self_
+
+# --- campaign ---
+experiment: ???          # zero_shot | one_shot | few_shot
+
+decision:
+  metric: es_mean              # es_mean or crps
+  anchor_hour: 0
+  origin_step: 24
+  alpha: 0.05
+  nw_lag_rule: "T**0.25"
+
+seed_policy:
+  seeds_per_trial: 1
+  seeds: [0]
+
+# Where this campaign writes
+super_root: outputs/${model.model_type}/${model.size}/${experiment}/super_runs/${now:%Y-%m-%d_%H-%M-%S}
+# Where per-run folders live
+runs_root: outputs/${model.model_type}/${model.size}/${experiment}/runs
+
+# --- model/backend selection ---
+model:
+  model_type: moirai
+  size: ???                          # free string for foldering
+  # base_hub_id: Salesforce/moirai-1.1-R-small
+  base_hub_id: ${hydra:runtime.cwd}/${oc.env:HF_PRETRAIN_DIR}      # ONLY USED DURING TESTING TO LOAD BASE ARCHITECTURE
+  num_samples: 100
+  batch_size: 128
+
+# --- finetune knobs (used only if experiment != zero_shot) ---
+moirai:
+  conf_fine_dir: src/models/moirai/conf/finetune  # absolute or relative
+  builder:
+    dataset_type: panel_exo
+    normalize: true
+    # keep optional; set if need exact time alignment like before
+    date_offset: "2022-12-31 23:00:00"
+    train_csv_path: raw_data/single_bid_zones/DE_LU/lagged/de_lu_train_val_feat_lag7d.csv
+  finetune:
+    model: ??? # DEV_moirai_{tiny,small,base,large}_lagmask
+    patch_size: 32
+    data_train: de_lu_train_feat_lag7d          
+    val_data: de_lu_val_feat_lag7d
+    mode: custom
+    val_mode: custom
+    trainer_precision: 32
+    train_data_workers: 0
+    enable_progress_bar: true
+
+# --- rolling windows for test ---
+windows:
+  context_length: 168
+  prediction_length: 24
+  distance: 24
+  offset: 168
+
+# --- data locations + columns (TEST ONLY; no train CSV needed here) ---
+data:
+  train_csv_path: raw_data/single_bid_zones/DE_LU/lagged/de_lu_train_val_feat_lag7d.csv
+  test_csv_path: raw_data/single_bid_zones/DE_LU/lagged/de_lu_val_feat_lag7d.csv
+  id_col: unique_id
+  date_col: ds
+  target_col: y
+  fillna_forward: true
+
+# Baseline (initial) features for zero-shot & for finetune datasets
+features:
+  ck_cols: ["is_weekend","is_holiday","month_sin","month_cos","day_of_week_sin","day_of_week_cos","hour_sin","hour_cos"]
+  cu_cols: []
+
+
+# What the test runner saves (both allowed; test script supports a list)
+output:
+  metric: ["es","crps", "ece"]    # save both per-origin files
+  format: parquet
+
+test:
+  tag_prefix: "DM"
+
+hydra:
+  run:
+    dir: ${super_root}
+  job:
+    chdir: true

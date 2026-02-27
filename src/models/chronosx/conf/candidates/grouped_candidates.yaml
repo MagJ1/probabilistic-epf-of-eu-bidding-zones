@@ -1,0 +1,48 @@
+candidates_queue:
+  - group:
+      - { name: co2_emission_allowances, type: cu }
+      - { name: co2_emission_allowances_lag7d, type: ck }
+      - { name: load, type: cu }
+      - { name: load_lag7d, type: ck }
+    policy:
+      adopt: adopt_never
+      queue: pop_after_run
+  - group:
+      - { name: gas_price, type: cu }
+      - { name: gas_price_lag7d, type: ck }
+      - { name: synthetic_price, type: cu }
+      - { name: synthetic_price_lag7d, type: ck }
+    policy:
+      adopt: adopt_never
+      queue: pop_after_run
+  - group:
+      - { name: non_renewable, type: cu }
+      - { name: non_renewable_lag7d, type: ck }
+      - { name: renewable, type: cu }
+      - { name: renewable_lag7d, type: ck }
+    policy:
+      adopt: adopt_never
+      queue: pop_after_run
+  - group:
+      - { name: non_renewable, type: cu }
+      - { name: non_renewable_lag7d, type: ck }
+      - { name: renewable, type: cu }
+      - { name: renewable_lag7d, type: ck }
+      - { name: cross_border_trading, type: cu }
+      - { name: cross_border_trading_lag7d, type: ck }
+    policy:
+      adopt: adopt_never
+      queue: pop_after_run
+  - group:
+      - { name: non_renewable, type: cu }
+      - { name: non_renewable_lag7d, type: ck }
+      - { name: renewable, type: cu }
+      - { name: renewable_lag7d, type: ck }
+      - { name: load, type: cu }
+      - { name: load_lag7d, type: ck }
+    policy:
+      adopt: adopt_never
+      queue: pop_after_run
+
+
+# possible policies are "adopt_always", "adopt_never", "adopt_if_improves", "adopt_if_worse"

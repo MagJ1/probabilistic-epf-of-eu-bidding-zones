@@ -1,0 +1,49 @@
+# models/chronosx/conf/config_super.yaml
+defaults:
+  - data: ???
+  - logging: default
+  - model: ???
+  - output: default
+  - candidates: ???
+  - train: ???
+  - _self_
+
+experiment: ???
+
+# Decision policy
+decision:
+  metric: es_mean            # es_mean | crps
+  anchor_hour: ${data.origin_anchor_hour_test}             # filter to this hour (optional)
+  origin_step: 24            # or downsample every k origins if no anchor
+  alpha: 0.05
+  nw_lag_rule: "T**0.25"
+
+# Seeds (currently recorded in state; easy to fan out later)
+seed_policy:
+  seeds_per_trial: 1
+  seeds: [42]
+
+# Where the super-run artifacts live
+super_root: outputs/chronosx/${model.size}/${experiment}/super_runs/${now:%Y-%m-%d_%H-%M-%S}
+
+# Where individual train/test runs live (ChronosX runners should write here)
+runs_root: outputs/chronosx/${model.size}/${experiment}/runs
+
+# Initial (baseline) features
+features:
+  ck_cols: ["is_weekend", "is_holiday", "month_sin", "month_cos", "day_of_week_sin", "day_of_week_cos", "hour_sin", "hour_cos"]
+  cu_cols: []
+
+# Test-time knobs the backend forwards to the ChronosX test runner
+test:
+  tag_prefix: DM
+  num_samples: 256
+  batch_size: 128
+  enable_progress_bar: true
+
+
+hydra:
+  run:
+    dir: ${super_root}
+  job:
+    chdir: true

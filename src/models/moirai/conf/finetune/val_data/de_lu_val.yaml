@@ -1,0 +1,9 @@
+_target_: models.moirai.simple_panel_exo.generate_eval_builder
+dataset: de_lu_val
+offset: 168
+eval_length: 8592
+prediction_length: 24
+context_length: 168
+patch_size: 32
+mode: custom
+distance: 24

@@ -1,0 +1,20 @@
+# src/models/nhits_qra/conf/config_test.yaml
+defaults:
+  - data: ???
+  - logging: default
+  - test: default
+  - model: ???
+  - _self_
+
+experiment: ???
+tag: ???
+out_dir: ${test.source_run_dir}/test/${tag}
+# where to write THIS test run’s outputs
+
+seed: 42
+
+hydra:
+  run:
+    dir: ${out_dir}
+  job:
+    chdir: true

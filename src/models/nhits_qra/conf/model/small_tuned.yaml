@@ -1,0 +1,19 @@
+# conf/model/small.yaml
+model_type: nhits_qra
+size: small
+plot_size: small
+input_size: ${data.context_length}
+h: ${data.forecast_horizon}
+
+n_blocks: [2, 2, 2,2]
+mlp_units:
+  - [96, 96]
+  - [96, 96]
+  - [96, 96]
+  - [96, 96]
+dropout_prob_theta: 0.14097481854202126
+n_pool_kernel_size: [8, 4, 2,2]
+n_freq_downsample: [4, 2, 2,1]
+
+past_unknown_cov_cutoff: 14
+realistic_mode: true

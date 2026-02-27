@@ -1,0 +1,23 @@
+hydra:
+  run:
+    dir: outputs/finetune/${exp_name}/${hydra:runtime.choices.model}/${model.finetune_pattern}/${hydra:runtime.choices.data}/${run_name}
+
+defaults:
+  # - default           # loads upstream finetune/default.yaml
+  - trainer: default
+  - dataloader: default
+  - model: ???
+  - data: ???
+  - val_data: ???
+  - _self_
+
+exp_name: ???
+run_name: ${now:%Y-%m-%d_%H-%M-%S}
+
+seed: 0
+tf32: true
+compile: false  # set to mode: default, reduce-overhead, max-autotune
+ckpt_path: null
+
+# to potentially use a local, pretrained moirai model
+hf_pretrain_dir: pretrained/moirai/DEV_moirai_tiny_lagmask/GER_pretrain/first_run/HF_checkpoints/last # pretrained/moirai/DEV_moirai_tiny_lagmask/GER_pretrain/first_run/HF_checkpoints/last 

@@ -1,0 +1,45 @@
+# conf/config_super.yaml  (NHITS+QRA)
+
+defaults:
+  - data: ???           
+  - model: ???          
+  - train_nhits: ???
+  - train_qra: ???
+  - test: ???
+  - candidates: ???
+  - logging: default
+  - _self_
+
+# Identify this campaign
+experiment: ???
+
+# Decision policy used by super-runner
+decision:
+  metric: crps_mean
+  anchor_hour: 0
+  origin_step: 24
+  alpha: 0.05
+  nw_lag_rule: "T**0.25"
+
+# Repro policy
+seed_policy:
+  seeds_per_trial: 1
+  seeds: [42]
+
+# Where this super-run writes its own folder
+super_root: outputs/${model.model_type}/${model.size}/${experiment}/super_runs/${now:%Y-%m-%d_%H-%M-%S}
+
+# Where train runs live (backend will place runs here)
+runs_root: outputs/${model.model_type}/${model.size}/${experiment}/runs
+
+# Baseline feature set for NHITSQRA
+features:
+  ck_cols: ["is_weekend", "is_holiday", "month_sin", "month_cos", "day_of_week_sin", "day_of_week_cos", "hour_sin", "hour_cos"]
+  cu_cols: []
+  static_cols: []
+
+hydra:
+  run:
+    dir: ${super_root}
+  job:
+    chdir: true

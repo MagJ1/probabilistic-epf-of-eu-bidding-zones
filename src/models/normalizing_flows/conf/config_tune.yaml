@@ -1,0 +1,68 @@
+# src/models/normalizing_flows/conf/config_tune.yaml
+defaults:
+  - data: ???
+  - model: ???           
+  - features: calendar    
+  - logging: default
+  - train: ???        # reuse train block
+  - _self_
+
+# experiment metadata
+model_type: normalizing_flows
+seed: 42
+
+
+# Optuna/tuning settings
+tune:
+  study_name: ???   # unique per size/exp
+  storage: sqlite:///optuna_flows_multi_es_ece_${model.size}.db      # toggle persistence
+  directions: null
+  direction: minimize
+  metric: [val_es, val_ece]
+  n_trials: 40
+  timeout: null            # or in seconds, e.g. 7200
+  sampler: nsgaii             # for multi: nsgaii or motpe
+  pruner: prune             # keep simple first
+
+  # per-size search ranges (kept tight and feasible)
+  space:
+    tiny:
+      tf_in_size:      [8, 16, 32]         # must be divisible by n_heads
+      n_heads:         [1, 2, 4]         # must divide tf_in_size
+      n_layers:        [2, 4,6]        # encoder/decoder layers
+      nf_hidden_dim:   [8, 16, 32]    # MADE hidden size
+      n_flow_layers:   [4, 6, 8]        # MAF depth
+      n_made_blocks:   [1, 2]
+      tf_dropout:      [0.0, 0.3]        # continuous, uniform
+      lr_log10:        [-5.5, -3.5]      # sample log10 LR
+      warmup_epochs:   [0, 1, 2, 3]            # integer
+
+    small:
+      tf_in_size:      [64,96,128]
+      n_heads:         [4,8,16]
+      n_layers:        [8, 10, 12]
+      nf_hidden_dim:   [64, 96, 128]
+      n_flow_layers:   [8, 10, 12]
+      n_made_blocks:   [1, 2, 3]
+      tf_dropout:      [0.0, 0.3]
+      lr_log10:        [-5.5, -3.5]
+      warmup_epochs:   [0, 1, 2, 3]
+
+    base:
+      tf_in_size:      [160,192,256]
+      n_heads:         [4, 8, 16]
+      n_layers:        [12, 14,16]
+      nf_hidden_dim:   [160, 192,256]
+      n_flow_layers:   [14, 16,18]
+      n_made_blocks:   [1, 2, 3]
+      tf_dropout:      [0.0, 0.3]
+      lr_log10:        [-5.5, -3.5]
+      warmup_epochs:   [0,1,2,3]
+
+out_root: outputs/${model_type}/${model.size}/tuning/${tune.study_name}
+
+hydra:
+  run:
+    dir: ${out_root}     # hydra chdirs here (we’ll nest trial dirs within)
+  job:
+    chdir: true

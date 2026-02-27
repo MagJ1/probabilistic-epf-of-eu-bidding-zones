@@ -1,0 +1,12 @@
+model_type: chronosx
+size: large
+pretrained_name_or_path: amazon/chronos-t5-large   # or path to a finetuned HF dir
+device_map: auto
+
+# injection & FT knobs
+# injection set automatically to None, if use_covariates==None
+covariate_injection: IIB+OIB     
+hidden_dim: 256
+num_layers: 3
+layers_to_unfreeze: injection_block
+eval_skip_pretrained: false       # skip zero-shot validation before FT

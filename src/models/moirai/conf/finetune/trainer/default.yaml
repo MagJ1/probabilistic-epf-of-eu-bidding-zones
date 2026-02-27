@@ -1,0 +1,38 @@
+# @package _global_
+
+trainer:
+  _target_: lightning.Trainer
+  accelerator: auto
+  strategy: auto
+  devices: auto
+  num_nodes: 1
+  precision: 32
+
+  logger:
+      _target_: lightning.pytorch.loggers.TensorBoardLogger
+      save_dir: ${hydra:runtime.output_dir}
+      name: logs
+  callbacks:
+    - _target_: lightning.pytorch.callbacks.LearningRateMonitor
+      logging_interval: epoch
+    - _target_: lightning.pytorch.callbacks.ModelCheckpoint
+      dirpath: ${hydra:runtime.output_dir}/checkpoints
+      monitor: val/PackedNLLLoss
+      save_weights_only: true
+      filename: best-{epoch:02d}
+      mode: min
+      save_top_k: 1
+      every_n_epochs: 1
+      save_last: true
+    - _target_: lightning.pytorch.callbacks.EarlyStopping
+      monitor: val/PackedNLLLoss
+      min_delta: 0.001
+      patience: 20
+      mode: min
+      strict: false
+      verbose: true
+  max_epochs: 100
+  enable_progress_bar: false
+  accumulate_grad_batches: 1
+  gradient_clip_val: 1.0
+  gradient_clip_algorithm: norm

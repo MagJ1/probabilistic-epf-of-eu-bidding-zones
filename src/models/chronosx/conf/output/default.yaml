@@ -1,0 +1,2 @@
+format: csv
+metric: [crps, es, ece, berkowitz] 

@@ -1,0 +1,42 @@
+# conf/train/default.yaml
+
+epochs: 100 # set null, if max_steps should be used
+
+# per-device batch sizes
+batch_size: 85           # maps to per_device_train_batch_size
+eval_batch_size: 128       # maps to per_device_eval_batch_size
+
+# optimizer & LR scheduling
+learning_rate: 1e-3
+scheduler: linear        # e.g. linear | cosine | constant | cosine_with_restarts
+warmup_ratio: 0.05
+optim: adamw_torch_fused       # on cuda adamw_torch_fused
+
+# logging / checkpointing / schedule
+log_steps: 10
+enable_tensorboard: true
+save_steps: 145     # multiple of eval_steps
+eval_steps: 145
+
+# len(train_data_ex_val) = 37273, 
+# num_windows = len(train_data_ex_val)- contex_length-horizon_length = 37081
+# batches_per_epoch = 37081 / batch_size = 1159
+# steps_per_epoch = batches_per_epoch = 580
+
+# set max_steps to -1, to make the model determine how many steps are necessary to train for the number of epochs.
+max_steps: -1    # required if epochs is null       
+save_total_limit: 1
+load_best_model_at_end: true
+enable_progress_bar: false
+
+# gradient accumulation & eval accumulation
+grad_accum: 2   # maps to gradient_accumulation_steps
+eval_accum_steps: 4
+
+early_stopping_enabled: true
+early_stopping_patience: 20     # HF counts
+early_stopping_threshold: 0.001
+
+# dataloader workers
+num_workers: 0    # keep at zero, more than zero is not working 
+

@@ -1,0 +1,64 @@
+enabled: true
+run_stage: after_train
+
+solver_loss: iterative_pinball   # either exact_pinball, iterative_pinball, iterative_calib
+
+mc_nhits_samples_qra: 64
+n_epochs: 200
+batch_size: 512
+lr: 1e-4
+patience: 10
+verbose: false
+
+features:
+  include: []
+  exclude: []
+
+use_pca: true
+pca_var: 0.95
+n_components: null
+
+sample_k: 0             # # 0=none,1=mean,2=mean+std
+
+lambda_grid: [0.0, 1.0e-4, 1.0e-3]
+quantiles: [1,10,50,90,99]
+enforce_monotonicity: true
+repair_method: isotonic    
+interp_method: linear
+target_quantiles:
+  # custom: [1,2,3,4,5,6,8,9,10,90,91,92,93,94,95,96,97,98,99]
+  uniform: 200
+  # piecewise:
+  #   - {lo: 0,    hi: 5,   n: 41}   # dense in lower 0-5%
+  #   - {lo: 5,    hi: 95,  n: 119}  # medium center
+  #   - {lo: 95,   hi: 100, n: 41}   # dense tails
+
+
+n_samples_val: 256
+subsample_stride: 4
+
+
+mix_kappa: [0.3, 0.4, 0.5, 0.6, 0.7]
+
+chung_loss:
+  scale: true
+  sharp_penalty: 0.5
+  sharp_all: true
+
+# only used with iterative_calib_chung solver
+chung_model:
+  kind: mlp # either linear or mlp
+  hidden_layers: [32, 32]
+  dropout: 0.1
+  activation_function: relu # relu or gelu
+
+qra_eval:
+  compute: [pinball, crps, berkowitz, ece]   # what to compute
+  export:  [pinball, crps, berkowitz, ece]   # what to write to files
+  prefix:  val                               # val
+  resources:
+    n_samples_eval: 256                      # only used if CRPS/ES requested
+  tensorboard:
+    enable: true
+    log_dir: null                            # null => default under metrics_dir/tensorboard
+    log_per_h: true                          # log per-horizon scalars (H=24 so ok)

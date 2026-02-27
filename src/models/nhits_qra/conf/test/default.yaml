@@ -1,0 +1,40 @@
+source_run_id: ???
+source_run_dir: ${hydra:runtime.cwd}/outputs/nhits_qra/${model.size}/${experiment}/runs/${test.source_run_id}
+batch_size: 128
+num_workers: 4
+log_every_n_steps: 1
+subsample_stride: 1
+enable_progress_bar: false
+tag_prefix: "DM"
+
+
+qra_eval:
+  compute: [pinball, crps, berkowitz, ece]   # what to compute
+  export:  [pinball, crps, berkowitz, ece]   # what to write to files
+  prefix:  test                               # test
+  resources:
+    n_samples_eval: 256                      # only used if CRPS/ES requested
+  tensorboard:
+    enable: true
+    log_dir: null                            # null => default under metrics_dir/tensorboard
+    log_per_h: true                          # log per-horizon scalars (H=24 so ok)
+
+
+plotting:
+  model_name: NHITS+QRA
+  size: ${model.plot_size}
+  fan_chart:
+    enable_fan_plotting: true
+    type: steps                # (we only implement sampling path, still “steps” style)
+    origin_ds: ["2024-07-28 00:00", "2024-06-10 00:00", "2024-05-11 00:00", "2024-09-02 00:00", "2024-02-06 00:00"]   # one or many timestamps; tz-naive OK
+    quantile_ranges:
+      - [0.05, 0.95]
+      - [0.25, 0.75]
+    n_samples_for_plotting: 256      # S for sampling from quantiles
+    title_if_single_plot: ""          # optional custom title
+    history_hours: 168    
+
+  pit:
+    enable_pit_plotting: true
+    horizons: "all"        # or: [0, 23]  (0-based indices)
+    bins: 100               # histogram bins

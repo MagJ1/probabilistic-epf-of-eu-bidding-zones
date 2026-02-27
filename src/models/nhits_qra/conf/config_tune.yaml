@@ -1,0 +1,176 @@
+defaults:
+  - data: ???
+  - model: ???         # must set input_size==context_length and h==forecast_horizon
+  - features: feature_registry
+  - logging: default
+  - train_nhits: ???
+  - train_qra: ???   # used by run_qra(); we’ll override some fields per trial
+  - _self_
+
+seed: 42
+
+tune:
+  study_name: ???
+  storage: sqlite:///optuna_nhits_qra_multi_es_ece_${model.size}.db
+  direction: minimize
+  directions: null
+  metric: [val_mean_crps, val_mean_ece]        # (or val_mean_crps / val_mean_pinball)
+  n_trials: 40
+  timeout: null
+  sampler: nsga2
+  pruner: null
+
+  # ===== NHITS search space (generative, variable stacks) =====
+  nhits_space:
+    tiny:
+      warmup_epochs: [0,1,2,3]
+      # 1) macro shape
+      n_stacks:            [1, 2, 3]
+      blocks_per_stack:    [1, 2, 3]           # base blocks per stack
+      layers_per_block:    [2,3]           # MLP depth inside each block
+      width_per_layer:     [8, 16, 32]     # hidden size per MLP layer
+      n_pool_kernel_schedules:
+        - [2, 2, 2]
+        - [4, 2, 1]
+        - [8, 4, 2]
+      n_freq_downsample_schedules:
+        - [2, 2, 2]
+        - [4, 2, 1]
+        - [8, 4, 2]
+
+      # 3) regularization + LR
+      dropout_prob_theta:  [0.00, 0.20]
+      lr_log10:            [-4.3, -3.7]      # suggest in log10, convert to LR
+
+    small:
+      warmup_epochs: [0,1,2,3]
+      n_stacks:            [3,4,5]
+      blocks_per_stack:    [1, 2, 3]
+      layers_per_block:    [2, 3]
+      width_per_layer:     [64,96,128]
+      n_pool_kernel_schedules:
+        - [4, 2, 2, 1, 1, 1, 1]
+        - [8, 4, 2, 2, 1, 1, 1]
+      n_freq_downsample_schedules:
+        - [4, 2, 2, 1, 1, 1, 1]
+        - [8, 4, 2, 2, 1, 1, 1]
+      dropout_prob_theta:  [0.00, 0.15]
+      lr_log10:            [-4.3, -3.7]
+
+
+    base:
+      warmup_epochs: [0,1,2,3]
+      n_stacks:            [3,4,5]
+      blocks_per_stack:    [1,2,3]
+      layers_per_block:    [2,3,4]
+      width_per_layer:     [192, 256, 320]
+      n_pool_kernel_schedules:
+        - [4, 2, 2, 1, 1, 1, 1]
+        - [8, 4, 2, 2, 1, 1, 1]
+        - [16, 8, 4, 2, 1, 1, 1]
+      n_freq_downsample_schedules:
+        - [4, 2, 2, 1, 1, 1, 1]
+        - [8, 4, 2, 2, 1, 1, 1]
+        - [16, 8, 4, 2, 1, 1, 1]
+      dropout_prob_theta:  [0.00, 0.15]
+      lr_log10:            [-4.3, -3.7]
+
+
+  # ===== QRA knobs that we allow Optuna to tweak =====
+  qra_space:
+    tiny:
+      # design size
+      mc_nhits_samples_qra: [8, 16, 32]
+
+      sample_k: [0, 1, 2]
+      subsample_stride: [2,4,8]
+      quantiles:
+        - [10,50,90]
+        - [1,10,50,90,99]
+
+      # PCA
+      use_pca: [true, false]
+      pca_var: [0.9,0.95, 0.99]   # only used if use_pca
+
+      # solver choice + grids
+      lambda_grids:
+        - [0.0, 1.0e-4, 1.0e-3]
+        - [0.0, 1.0e-3]
+        - [0.0]
+      # iterative solver hparams (if solver_loss either iterative_pinball or iterative_calib)
+      it_n_epochs: [100, 200]
+      it_batch_size: [256, 512, 1024]
+      it_lr_log10: [-4.5, -3.5]
+      it_patience: [10, 20]
+
+      mix_kappa: [0.5]
+
+    small:
+      # design size
+      mc_nhits_samples_qra: [32, 48, 64]
+      sample_k: [0, 1, 2]
+      subsample_stride: [2, 4,8]
+      quantiles:
+        - [10,20,50,80,90]
+        - [1,3,5,10,50,90,95,97,99]
+
+      # PCA
+      use_pca: [true, false]
+      pca_var: [0.95, 0.99]   # only used if use_pca
+
+      # solver choice + grids
+      lambda_grids:
+        - [0.0, 1.0e-4, 1.0e-3]
+        - [0.0, 1.0e-3]
+        - [0.0]
+      # iterative solver hparams (if solver_loss either iterative_pinball or iterative_calib)
+      it_n_epochs: [100, 200]
+      it_batch_size: [256, 512, 1024]
+      it_lr_log10: [-4.5, -3.5]
+      it_patience: [10, 20]
+
+      mix_kappa: [0.5]
+    base:
+      # design size
+      mc_nhits_samples_qra: [64,96,128]
+      sample_k: [0, 1, 2]
+      subsample_stride: [1, 2, 4,8]
+      quantiles:
+        - [10,20,50,80,90]
+        - [1,3,5,10,50,90,95,97,99]
+      # PCA
+      use_pca: [true, false]
+      pca_var: [0.9,0.95, 0.99]   # only used if use_pca
+
+      # solver choice + grids
+      lambda_grids:
+        - [0.0, 1.0e-4, 1.0e-3]
+        - [0.0, 1.0e-3]
+        - [0.0]
+ 
+      # iterative solver hparams (if solver_loss either iterative_pinball or iterative_calib)
+      it_n_epochs: [100, 200]
+      it_batch_size: [256, 512, 1024]
+      it_lr_log10: [-4.5, -3.5]
+      it_patience: [30, 50]
+
+      mix_kappa: [0.5]
+
+  swag_space:
+    start_epoch: [5]
+    collect_every: [1,2,4]
+    max_rank: [10,20,30]
+    scale: [0.5, 1.0, 2.0]
+
+# Make PL sanity pass quick/quiet during tuning
+train_nhits:
+  num_sanity_val_steps: 0
+
+# Output root for this study
+out_root: outputs/nhits_qra/${model.size}/tuning/${tune.study_name}
+
+hydra:
+  run:
+    dir: ${out_root}
+  job:
+    chdir: true

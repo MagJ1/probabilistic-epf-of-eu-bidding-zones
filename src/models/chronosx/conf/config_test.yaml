@@ -1,0 +1,58 @@
+defaults:
+  - logging: default
+  - output: default
+  - features: default
+  - data: ???
+  - mask: default
+  - model: ???
+  - _self_
+
+# output folder for THIS test run
+out_dir: ${test.source_run_dir}/test/${tag}
+tag: ???
+seed: 42
+
+experiment: ???
+
+metrics:
+  es_beta: 1.0
+  es_pair_subsample: null      # e.g. 128 if S is large and O(S^2) is too slow
+  es_slices: 128
+  ece_taus: [10,20,30,40,50,60,70,80,90]
+
+test:
+  # load finetuned ckpt or plain zero_shot, source_run_dir and source_run_id are ignored in case of non_finetuned=True
+  non_finetuned: false      
+  source_run_dir: ${hydra:runtime.cwd}/outputs/chronosx/${model.size}/${experiment}/runs/${test.source_run_id}
+  source_run_id: ???
+  batch_size: 128
+  num_samples: 256
+  plotting:
+    model_name: ChronosX
+    size: ${model.size}
+    fan_chart:
+      enable_fan_plotting: true
+      type: steps                    # "steps" or "line"
+      origin_ds: ["2024-07-28 00:00"]  # one or more timestamps 
+      quantile_ranges:
+        - [0.05, 0.95]
+        - [0.25, 0.75]
+      n_samples_for_plotting: 1024   # S for plotting (uses existing samples)
+      title_if_single_plot: ""
+      history_hours: 168
+    pit:
+      enable_pit_plotting: true
+      horizons: "all"   # or e.g. [0, 23]
+      bins: 100
+
+progress_bar:
+  enabled: true     # turn progress bar on/off
+  desc: "Forecasting"
+  position: 0
+
+
+hydra:
+  run:
+    dir: ${out_dir}
+  job:
+    chdir: true

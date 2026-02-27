@@ -1,0 +1,20 @@
+# src/models/normalizing_flows/conf/config_test.yaml
+defaults:
+  - logging: default
+  - test: ???
+  - model: ???
+  - data: ???
+  - _self_
+
+experiment: ???
+tag: ???
+out_dir: ${test.source_run_dir}/test/${tag}
+# where to write THIS test run’s outputs
+
+seed: 42
+
+hydra:
+  run:
+    dir: ${out_dir}
+  job:
+    chdir: true

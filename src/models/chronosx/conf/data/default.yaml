@@ -1,0 +1,23 @@
+train_csv_path: raw_data/single_bid_zones/DE_LU/de_lu_train.csv
+val_csv_path: raw_data/single_bid_zones/DE_LU/de_lu_val.csv
+
+test_csv_path:  raw_data/single_bid_zones/DE_LU/de_lu_test.csv
+id_col:    unique_id
+date_col:  ds
+target_col: y
+
+context_length: 168
+prediction_length: 24
+
+
+# Only origin_stride_test and origin_anchor_hour_test are working! Others not, because GluonTS is solely index based, thus filtering for hours is not possible. Stride doesn't help as well, because of DTS shifting.
+origin_enabled_train: false
+origin_stride_train: 1
+origin_anchor_hour_train: null
+origin_enabled_val: false
+origin_stride_val: 1
+origin_anchor_hour_val: null
+origin_stride_test: 24
+origin_anchor_hour_test: 0
+
+origin_seed: 42

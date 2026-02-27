@@ -1,0 +1,17 @@
+ck_cols:
+  - is_weekend
+  - is_holiday
+  - month_sin
+  - month_cos
+  - day_of_week_sin
+  - day_of_week_cos
+  - hour_sin
+  - hour_cos
+cu_cols:
+  - gas_price
+  - cross_border_trading
+  - non_renewable
+  - renewable
+  - load
+  - co2_emission_allowances
+  - synthetic_price

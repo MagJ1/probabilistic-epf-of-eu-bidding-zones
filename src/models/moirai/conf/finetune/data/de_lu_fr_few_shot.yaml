@@ -1,0 +1,22 @@
+# conf/finetune/data/custom_concat.yaml
+_target_: models.moirai.custom_concat_dataset_builder.CustomConcatDatasetBuilder
+_convert_: object
+_args_:
+  - _target_: models.moirai.simple_panel_exo.SimpleFinetuneDatasetBuilder
+    _convert_: object
+    dataset: de_lu_few_shot
+    windows: 529   # (train_length - ctx - pred)//distance + 1
+    distance: 1
+    prediction_length: 24
+    context_length: 168
+    patch_size: 32
+    mode: custom
+  - _target_: models.moirai.simple_panel_exo.SimpleFinetuneDatasetBuilder
+    _convert_: object
+    dataset: fr_train
+    windows: 37082
+    distance: 1
+    prediction_length: 24
+    context_length: 168
+    patch_size: 32
+    mode: custom

@@ -1,0 +1,81 @@
+# Hydra config for test_moirai.py
+
+# Where to write this test run (use usual folder pattern)
+out_dir: "outputs/moirai/${model_size}/${experiment_type}/runs/${now:%Y-%m-%d_%H-%M-%S}-${tag}"
+tag: ???
+seed: 42
+experiment_type: ???
+
+model_size: ???
+logging:
+  log_level: INFO
+
+output:
+  format: parquet  # parquet | csv
+  metric: ["es", "crps", "ece"] # implemented es, crps, ece
+
+data:
+  train_csv_path: "raw_data/Germany_time_zone/all/train_with_all.csv"
+  test_csv_path:  "raw_data/Germany_time_zone/all/val_with_all.csv"
+  date_col: ds
+  id_col: unique_id
+  target_col: y
+  feat_dynamic_real:
+    - is_weekend
+    - is_holiday
+    - month_sin
+    - month_cos
+    - day_of_week_sin
+    - day_of_week_cos
+    - hour_sin
+    - hour_cos
+  past_feat_dynamic_real:
+    # - gas_price
+    # - co2_emission_allowances
+    # - synthetic_price
+    # - cross_border_trading
+    # - non_renewable
+    # - renewable
+  fillna_forward: true
+
+model:
+  ckpt_path: null
+  base_hub_id: ${hydra:runtime.cwd}/${oc.env:HF_PRETRAIN_DIR} # export HF_PRETRAIN_DIR=outputs/pretrain/DEV_moirai_tiny_lagmask/GER_pretrain/first_run/HF_checkpoints/last # needed for zero_shot forecast
+  num_samples: 200
+  batch_size: 128
+  lag_mask_steps: 14
+  lag_mask_value: 0.0
+
+windows:
+  context_length: 168
+  prediction_length: 24
+  distance: 24
+
+plotting:
+  model_name: Moirai
+  size: ${model_size}     
+  fan_chart:
+    enable_fan_plotting: true
+    type: steps
+    origin_ds: ["2024-12-03 00:00", "2024-08-05 00:00", "2024-01-16 00:00", "2024-10-22 00:00"]   # you can list multiple
+    quantile_ranges:
+      - [0.05, 0.95]
+      - [0.25, 0.75]
+    n_samples_for_plotting: 1024
+    title_if_single_plot: ""
+    history_hours: 168
+
+  pit:
+    enable_pit_plotting: true
+    horizons: "all"   # or e.g. [0, 23]
+    bins: 100
+
+hydra:
+  run:
+    dir: ${out_dir}
+  job:
+    chdir: true
+
+
+
+"['is_weekend','is_holiday','month_sin','month_cos','day_of_week_sin','day_of_week_cos','hour_sin','hour_cos']"

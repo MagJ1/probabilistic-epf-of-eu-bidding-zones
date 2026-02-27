@@ -1,0 +1,41 @@
+registry:
+  hour_sin: {role: ck, standardize: false}
+  hour_cos: {role: ck, standardize: false}
+  day_of_week_sin: {role: ck, standardize: false}
+  day_of_week_cos: {role: ck, standardize: false}
+  month_sin: {role: ck, standardize: false}
+  month_cos: {role: ck, standardize: false}
+  is_weekend: {role: ck, standardize: false}
+  is_holiday: {role: ck, standardize: false}
+  co2_emission_allowances_lag7d: {role: ck, standardize: true}
+  load_lag7d: {role: ck, standardize: true}
+  gas_price_lag7d: {role: ck, standardize: true}
+  synthetic_price_lag7d: {role: ck, standardize: true}
+  non_renewable_lag7d: {role: ck, standardize: true}
+  renewable_lag7d: {role: ck, standardize: true}
+  cross_border_trading_lag7d: {role: ck, standardize: true}
+
+  gas_price: {role: cu, standardize: true, scaler: zscore}
+  cross_border_trading: {role: cu, standardize: true, scaler: zscore}
+  non_renewable: {role: cu, standardize: true, scaler: zscore}
+  renewable: {role: cu, standardize: true, scaler: zscore}
+  load: {role: cu, standardize: true, scaler: zscore}
+  co2_emission_allowances: {role: cu, standardize: true, scaler: zscore}
+  synthetic_price: {role: cu, standardize: true, scaler: zscore}
+
+  unique_id: {role: static, standardize: false}
+
+enable_registry: true
+fit_on: "train"
+
+  # Active subsets
+active:
+  ck: [hour_sin, hour_cos, day_of_week_sin, day_of_week_cos, month_sin, month_cos, is_weekend, is_holiday]
+  cu: []
+  static: []
+
+  # Optional quick overrides
+include: []
+exclude: []
+
+

@@ -1,0 +1,25 @@
+train_csv_path: raw_data/single_bid_zones/DE_LU/dev_de_lu_train_val.csv
+test_csv_path: raw_data/single_bid_zones/DE_LU/de_lu_test.csv
+date_col: ds
+id_col: unique_id
+y_col: y
+
+
+# - origin_stride is in HOURS.
+# Without anchor: take every `origin_stride`-th hour.
+# With anchor_hour=h: keep only t0 where hour(t0)==h; the effective minimum spacing is 24h. We then step by `max(1, origin_stride // 24)` on that anchored list (i.e., 24→daily, 168→weekly, etc.).
+origin_stride_train: 192
+origin_stride_val: 24
+origin_stride_test: 24
+
+origin_anchor_hour_train: null
+origin_anchor_hour_val: 0
+origin_anchor_hour_test: 0
+
+context_length: 168
+forecast_horizon: 24
+val_split_date: {electricity_prices: "2022-12-31 23:00"}
+
+ck_cols: ${features.ck_cols}
+cu_cols: ${features.cu_cols}
+scale_data: true

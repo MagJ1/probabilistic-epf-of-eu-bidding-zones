@@ -1,0 +1,5 @@
+enabled: true
+len: 14                # last K steps in the past window
+apply_in: [training, validation, test]
+mask_future: true      # mask entire future for past-only channels too
+value: null            # null -> np.nan

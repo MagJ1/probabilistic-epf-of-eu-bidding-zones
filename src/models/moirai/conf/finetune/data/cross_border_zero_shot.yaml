@@ -1,0 +1,130 @@
+# conf/finetune/data/custom_concat.yaml
+_target_: models.moirai.custom_concat_dataset_builder.CustomConcatDatasetBuilder
+_convert_: object
+_args_:
+  - _target_: models.moirai.simple_panel_exo.generate_finetune_builder
+    dataset: at_train
+    _convert_: object
+    train_length: 45842
+    prediction_length: 24
+    context_length: 168
+    patch_size: 32
+    mode: custom
+    distance: 1
+  - _target_: models.moirai.simple_panel_exo.generate_finetune_builder
+    dataset: be_train
+    _convert_: object
+    train_length: 45842
+    prediction_length: 24
+    context_length: 168
+    patch_size: 32
+    mode: custom
+    distance: 1
+  - _target_: models.moirai.simple_panel_exo.generate_finetune_builder
+    dataset: ch_train
+    _convert_: object
+    train_length: 45842
+    prediction_length: 24
+    context_length: 168
+    patch_size: 32
+    mode: custom
+    distance: 1
+  - _target_: models.moirai.simple_panel_exo.generate_finetune_builder
+    dataset: cz_train
+    _convert_: object
+    train_length: 45842
+    prediction_length: 24
+    context_length: 168
+    patch_size: 32
+    mode: custom
+    distance: 1
+  - _target_: models.moirai.simple_panel_exo.generate_finetune_builder
+    dataset: dk1_train
+    _convert_: object
+    train_length: 45842
+    prediction_length: 24
+    context_length: 168
+    patch_size: 32
+    mode: custom
+    distance: 1
+  - _target_: models.moirai.simple_panel_exo.generate_finetune_builder
+    dataset: dk2_train
+    _convert_: object
+    train_length: 45842
+    prediction_length: 24
+    context_length: 168
+    patch_size: 32
+    mode: custom
+    distance: 1
+  - _target_: models.moirai.simple_panel_exo.SimpleFinetuneDatasetBuilder
+    _convert_: object
+    dataset: fr_train
+    windows: 45842
+    distance: 1
+    prediction_length: 24
+    context_length: 168
+    patch_size: 32
+    mode: custom
+  - _target_: models.moirai.simple_panel_exo.SimpleFinetuneDatasetBuilder
+    _convert_: object
+    dataset: hu_train
+    windows: 45842
+    distance: 1
+    prediction_length: 24
+    context_length: 168
+    patch_size: 32
+    mode: custom
+  - _target_: models.moirai.simple_panel_exo.SimpleFinetuneDatasetBuilder
+    _convert_: object
+    dataset: it_north_train
+    windows: 45842
+    distance: 1
+    prediction_length: 24
+    context_length: 168
+    patch_size: 32
+    mode: custom
+  - _target_: models.moirai.simple_panel_exo.SimpleFinetuneDatasetBuilder
+    _convert_: object
+    dataset: nl_train
+    windows: 45842
+    distance: 1
+    prediction_length: 24
+    context_length: 168
+    patch_size: 32
+    mode: custom
+  - _target_: models.moirai.simple_panel_exo.SimpleFinetuneDatasetBuilder
+    _convert_: object
+    dataset: no2_train
+    windows: 45842
+    distance: 1
+    prediction_length: 24
+    context_length: 168
+    patch_size: 32
+    mode: custom
+  - _target_: models.moirai.simple_panel_exo.SimpleFinetuneDatasetBuilder
+    _convert_: object
+    dataset: pl_train
+    windows: 45842
+    distance: 1
+    prediction_length: 24
+    context_length: 168
+    patch_size: 32
+    mode: custom
+  - _target_: models.moirai.simple_panel_exo.SimpleFinetuneDatasetBuilder
+    _convert_: object
+    dataset: se4_train
+    windows: 45842
+    distance: 1
+    prediction_length: 24
+    context_length: 168
+    patch_size: 32
+    mode: custom
+  - _target_: models.moirai.simple_panel_exo.SimpleFinetuneDatasetBuilder
+    _convert_: object
+    dataset: si_train
+    windows: 45842
+    distance: 1
+    prediction_length: 24
+    context_length: 168
+    patch_size: 32
+    mode: custom

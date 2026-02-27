@@ -1,0 +1,32 @@
+source_run_id: ???
+source_run_dir: ${hydra:runtime.cwd}/outputs/normalizing_flows/${model.size}/${experiment}/runs/${test.source_run_id}
+batch_size: 128
+num_workers: 4
+n_samples_eval: 200
+log_every_n_steps: 1
+enable_progress_bar: false
+tag_prefix: "DM"
+
+detail:
+  crps: per_horizon    # none | per_horizon
+  es: per_sample      # none | per_sample
+  store_series: true   # also stash 1 scalar per forecast origin, potentially for DM
+  ece_taus: [10,20,30,40,50,60,70,80,90]
+
+plotting:
+  model_name: Normalizing Flows
+  size: ${model.plot_size}
+  fan_chart:
+    enable_fan_plotting: true
+    type: steps
+    origin_ds: ["2024-12-03 0:00", "2024-07-28 0:00", "2024-08-23 0:00"]                      # e.g. ["2023-12-31 00:00:00", "2024-01-07 12:00:00"]
+    quantile_ranges:                   # widest first for nice layering
+        - [0.05, 0.95]                   # 90% band
+        - [0.25, 0.75]                   # 50% band
+    n_samples_for_plotting: 1024
+    title_if_single_plot: ""           # optional title when plotting a single origin
+
+  pit:
+    enable_pit_plotting: true
+    horizons: "all"   # e.g., [0, 23]
+    bins: 100

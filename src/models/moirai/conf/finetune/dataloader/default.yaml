@@ -1,0 +1,30 @@
+# @package _global_
+
+train_dataloader:
+  _target_: uni2ts.data.loader.DataLoader
+  batch_size: 128  # Since sequence packing is not used, one can use a large batch size when mode='S'
+  batch_size_factor: 2.0
+  cycle: false  # Set it as false to loop over all batches per epoch
+  num_batches_per_epoch: null
+  shuffle: false
+  num_workers: 4
+  pin_memory: true
+  drop_last: false
+  fill_last: false
+  worker_init_fn: null
+  prefetch_factor: 2
+  persistent_workers: true
+val_dataloader:
+  _target_: uni2ts.data.loader.DataLoader
+  batch_size: 128
+  batch_size_factor: 2.0
+  cycle: false
+  num_batches_per_epoch: null
+  shuffle: false
+  num_workers: 0
+  pin_memory: false
+  drop_last: false
+  fill_last: false
+  worker_init_fn: null
+  prefetch_factor: 2
+  persistent_workers: false

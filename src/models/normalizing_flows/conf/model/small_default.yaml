@@ -1,0 +1,13 @@
+model_type: normalizing_flows
+size: small
+plot_size: small
+tf_in_size: 96
+nf_hidden_dim: 8
+n_layers: 10
+n_heads: 8
+n_flow_layers: 10
+n_made_blocks: 2
+tf_dropout: 0.1
+enc_unknown_cutoff: 14
+dec_known_past_injection_horizon: 12
+realistic_mode: true

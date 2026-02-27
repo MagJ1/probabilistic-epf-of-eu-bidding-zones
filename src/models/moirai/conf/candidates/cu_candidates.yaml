@@ -1,0 +1,8 @@
+candidates_queue:
+  - { name: "gas_price",               type: "cu" }
+  - { name: "cross_border_trading",    type: "cu" }
+  - { name: "non_renewable",           type: "cu" }
+  - { name: "renewable",               type: "cu" }
+  - { name: "load",                    type: "cu" }
+  - { name: "co2_emission_allowances", type: "cu" }
+  - { name: "synthetic_price",         type: "cu" }

@@ -1,0 +1,27 @@
+n_epochs: 5
+batch_size: 128
+gradient_clip_val: 2.0
+accumulate_grad_batches: 1
+
+lr: 3.0831e-4
+warmup_epochs: 2
+num_workers: 0
+persistent_workers: false
+
+loss_metric: "es"
+n_samples_loss: 128
+beta: 1
+k_slices: 64
+
+eval_metrics: ["crps", "es", "ece"]
+ece_taus: [10,20,30,40,50,60,70,80,90]
+n_samples_eval: 256
+
+log_every_n_steps: 1
+num_sanity_val_steps: 2
+
+early_stopping: true
+early_patience: 20
+early_min_delta: 0.0
+
+enable_progress_bar: true

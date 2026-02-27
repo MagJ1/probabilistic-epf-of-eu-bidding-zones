@@ -1,0 +1,19 @@
+# conf/model/tiny_tuned.yaml
+model_type: nhits_qra
+size: tiny
+plot_size: tiny
+input_size: ${data.context_length}
+h: ${data.forecast_horizon}
+
+# capacity
+n_blocks: [1, 1]
+mlp_units:
+  - [32, 32]
+  - [32, 32]
+dropout_prob_theta: 0.154
+n_pool_kernel_size: [2,2]
+n_freq_downsample: [2,2]
+
+
+past_unknown_cov_cutoff: 14
+realistic_mode: true

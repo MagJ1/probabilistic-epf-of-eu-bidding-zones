@@ -1,0 +1,50 @@
+# Minimal config to drive the super-runner
+
+defaults:
+  - data: ???
+  - model: ???
+  - train: ???
+  - test: ???
+  - candidates: ???
+  - logging: default
+  - _self_
+
+experiment: ???   # should be "one_shot","few_shot", "finetune"
+
+decision:
+  metric: es_mean          # es_mean
+  anchor_hour: 0
+  origin_step: 24
+  alpha: 0.05
+  nw_lag_rule: "T**0.25"
+
+seed_policy:
+  seeds_per_trial: 1
+  seeds: [42]
+
+# Where this campaign (super-run) writes its own folder
+super_root: outputs/${model.model_type}/${model.size}/${experiment}/super_runs/${now:%Y-%m-%d_%H-%M-%S}
+
+# Where train runs live (existing layout)
+runs_root: outputs/${model.model_type}/${model.size}/${experiment}/runs
+
+# Initial feature set (baseline)
+features:
+  ck_cols: ["is_weekend", "is_holiday", "month_sin", "month_cos", "day_of_week_sin", "day_of_week_cos", "hour_sin", "hour_cos"]
+  cu_cols: []
+
+# Candidate queue for this campaign
+# candidates_queue:
+#   - { name: "gas_price",  type: "cu" }
+#   - { name: "cross_border_trading",  type: "cu" }
+#   - { name: "non_renewable",  type: "cu" }
+#   - { name: "renewable",  type: "cu" }
+#   - { name: "load",  type: "cu" }
+#   - { name: "co2_emission_allowances",  type: "cu" }
+#   - { name: "synthetic_price",  type: "cu" }
+
+hydra:
+  run:
+    dir: ${super_root}
+  job:
+    chdir: true

@@ -1,0 +1,80 @@
+train_csv_path: null
+val_csv_path: null
+
+test_csv_path:  raw_data/single_bid_zones/DE_LU/de_lu_test.csv
+id_col:    unique_id
+date_col:  ds
+target_col: y
+
+context_length: 168
+prediction_length: 24
+
+# Only origin_stride_test and origin_anchor_hour_test are working! Others not, because GluonTS is solely index based, thus filtering for hours is not possible. Stride doesn't help as well, because of DTS shifting.
+origin_enabled_train: false
+origin_stride_train: 1
+origin_anchor_hour_train: null
+origin_enabled_val: false
+origin_stride_val: 1
+origin_anchor_hour_val: null
+origin_stride_test: 24
+origin_anchor_hour_test: 0
+
+
+concatenated_dataset:
+  - name: at_train
+    train_csv_path: raw_data/transfer_learning/at_train.csv
+    val_csv_path: raw_data/single_bid_zones/DE_LU/de_lu_val.csv
+    prob: 0.07142857
+  - name: be_train
+    train_csv_path: raw_data/transfer_learning/be_train.csv
+    val_csv_path: null
+    prob: 0.07142857
+  - name: ch_train
+    train_csv_path: raw_data/transfer_learning/ch_train.csv
+    val_csv_path: null
+    prob: 0.07142857
+  - name: cz_train
+    train_csv_path: raw_data/transfer_learning/cz_train.csv
+    val_csv_path: null
+    prob: 0.07142857
+  - name: dk1_train
+    train_csv_path: raw_data/transfer_learning/dk1_train.csv
+    val_csv_path: null
+    prob: 0.07142857
+  - name: dk2_train
+    train_csv_path: raw_data/transfer_learning/dk2_train.csv
+    val_csv_path: null
+    prob: 0.07142857
+  - name: fr_train
+    train_csv_path: raw_data/transfer_learning/fr_train.csv
+    val_csv_path: null
+    prob: 0.07142857
+  - name: hu_train
+    train_csv_path: raw_data/transfer_learning/hu_train.csv
+    val_csv_path: null
+    prob: 0.07142857
+  - name: it_north_train
+    train_csv_path: raw_data/transfer_learning/it_north_train.csv
+    val_csv_path: null
+    prob: 0.07142857
+  - name: nl_train
+    train_csv_path: raw_data/transfer_learning/nl_train.csv
+    val_csv_path: null
+    prob: 0.07142857
+  - name: no2_train
+    train_csv_path: raw_data/transfer_learning/no2_train.csv
+    val_csv_path: null
+    prob: 0.07142857
+  - name: pl_train
+    train_csv_path: raw_data/transfer_learning/pl_train.csv
+    val_csv_path: null
+    prob: 0.07142857
+  - name: se4_train
+    train_csv_path: raw_data/transfer_learning/se4_train.csv
+    val_csv_path: null
+    prob: 0.07142857
+  - name: si_train
+    train_csv_path: raw_data/transfer_learning/si_train.csv
+    val_csv_path: null
+    prob: 0.07142857
+
